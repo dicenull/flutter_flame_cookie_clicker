@@ -1,15 +1,20 @@
 import 'dart:math';
 
 import 'package:flame/components.dart';
+import 'package:flame/gestures.dart';
 import 'package:flutter_flame_cookie_clicker/controllers/cookie_controller.dart';
 import 'package:flutter_flame_cookie_clicker/cookie_clicker.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final mainCookie = Provider((_) => MainCookie());
 
-class MainCookie extends SpriteComponent with HasGameRef<CookieClicker> {
-  void click() {
+class MainCookie extends SpriteComponent
+    with HasGameRef<CookieClicker>, Tapable {
+  @override
+  bool onTapDown(TapDownInfo event) {
     gameRef.buildContext?.read(cookieController.notifier).bake();
+
+    return true;
   }
 
   @override
