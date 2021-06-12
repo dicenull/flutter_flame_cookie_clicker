@@ -12,13 +12,6 @@ import 'package:riverpod/riverpod.dart';
 final cookieClicker = Provider((_) => CookieClicker());
 
 class CookieClicker extends BaseGame with TapDetector {
-  final textPaint = TextPaint(
-    config: TextPaintConfig(
-      fontSize: 100.0,
-      color: Colors.white,
-    ),
-  );
-
   @override
   Future<void> onLoad() async {
     await images.load('ww.png');
@@ -29,12 +22,6 @@ class CookieClicker extends BaseGame with TapDetector {
   @override
   void render(Canvas canvas) {
     canvas.drawRect(size.toRect(), PaletteEntry(Colors.grey).paint());
-
-    textPaint.render(
-      canvas,
-      buildContext!.read(cookieController).bakeCount.toString(),
-      Vector2.all(20),
-    );
 
     super.render(canvas);
   }
