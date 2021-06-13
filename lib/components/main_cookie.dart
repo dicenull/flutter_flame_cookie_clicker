@@ -5,8 +5,10 @@ import 'package:flame/effects.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/gestures.dart';
 import 'package:flame/particles.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_flame_cookie_clicker/controllers/cookie_controller.dart';
 import 'package:flutter_flame_cookie_clicker/cookie_clicker.dart';
+import 'package:flutter_flame_cookie_clicker/particles/count_cookie_particle.dart';
 import 'package:flutter_flame_cookie_clicker/particles/drop_cookie_particle.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -14,12 +16,19 @@ final mainCookie = Provider((_) => MainCookie());
 
 class MainCookie extends SpriteComponent
     with HasGameRef<CookieClicker>, Tapable {
+  final textPaint = TextPaint(config: TextPaintConfig(color: Colors.white));
+
   @override
   bool onTapDown(TapDownInfo event) {
-    gameRef.buildContext?.read(cookieProvider.notifier).bake();
+    final context = gameRef.buildContext;
+    if (context == null) return false;
 
-    gameRef.add(
-        DropCookieParticle(pos: event.eventPosition.widget, size: size / 10));
+    context.read(cookieProvider.notifier).bake();
+
+    final pos = event.eventPosition.widget;
+
+    gameRef.add(DropCookieParticle(pos: pos, size: size / 10));
+    gameRef.add(CountCookieParticle('+1', pos: pos, textPaint: textPaint));
 
     return true;
   }
