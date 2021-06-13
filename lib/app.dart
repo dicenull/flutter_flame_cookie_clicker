@@ -16,7 +16,7 @@ class App extends HookWidget {
             Padding(
               padding: const EdgeInsets.only(top: 16),
               child: Text(
-                '${useProvider(cookieController).bakeCount} cookies',
+                '${useProvider(cookieProvider).bakeCount} cookies',
                 style: TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
