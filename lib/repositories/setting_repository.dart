@@ -13,8 +13,8 @@ enum Settings {
 class SettingRepository {
   Future<SharedPreferences> get _prefs => SharedPreferences.getInstance();
 
-  Future<int> getCookieCount() async =>
-      (await _prefs).getInt(describeEnum(Settings.cookie)) ?? 0;
-  Future<void> setCookieCount(int count) async =>
-      (await _prefs).setInt(describeEnum(Settings.cookie), count);
+  Future<int> getInt(Settings settings) async =>
+      (await _prefs).getInt(describeEnum(settings)) ?? 0;
+  Future<void> setInt(Settings settings, int point) async =>
+      (await _prefs).setInt(describeEnum(settings), point);
 }

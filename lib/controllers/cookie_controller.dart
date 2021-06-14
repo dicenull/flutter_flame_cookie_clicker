@@ -12,12 +12,12 @@ class CookieController extends StateNotifier<CookieState> {
     _fetch();
 
     stream.map((state) => state.bakeCount).distinct().listen((count) {
-      reader(settingRepository).setCookieCount(count);
+      reader(settingRepository).setInt(Settings.cookie, count);
     });
   }
 
   Future _fetch() async {
-    final initCount = await reader(settingRepository).getCookieCount();
+    final initCount = await reader(settingRepository).getInt(Settings.cookie);
     state = state.copyWith(bakeCount: initCount);
   }
 
