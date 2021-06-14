@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  AssetGenImage get cursor => const AssetGenImage('assets/images/cursor.png');
   AssetGenImage get ww => const AssetGenImage('assets/images/ww.png');
 }
 

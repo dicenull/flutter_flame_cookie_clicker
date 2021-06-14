@@ -14,7 +14,10 @@ final cookieClicker = Provider((_) => CookieClicker());
 class CookieClicker extends BaseGame with HasTapableComponents {
   @override
   Future<void> onLoad() async {
-    await Flame.images.load('ww.png');
+    await Flame.images.loadAll([
+      'ww.png',
+      'cursor.png',
+    ]);
 
     add(MainCookie());
   }
