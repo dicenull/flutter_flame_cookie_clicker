@@ -8,6 +8,7 @@ final settingRepository = Provider(
 
 enum Settings {
   cookie,
+  cursor,
 }
 
 class SettingRepository {

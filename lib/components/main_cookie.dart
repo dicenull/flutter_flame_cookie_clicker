@@ -6,6 +6,7 @@ import 'package:flame/flame.dart';
 import 'package:flame/gestures.dart';
 import 'package:flame/particles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_flame_cookie_clicker/components/auto_click_cursors.dart';
 import 'package:flutter_flame_cookie_clicker/controllers/cookie_controller.dart';
 import 'package:flutter_flame_cookie_clicker/cookie_clicker.dart';
 import 'package:flutter_flame_cookie_clicker/particles/count_cookie_particle.dart';
@@ -36,13 +37,15 @@ class MainCookie extends SpriteComponent
   @override
   Future<void>? onLoad() {
     sprite = Sprite(Flame.images.fromCache('ww.png'));
+    addChild(AutoClickCursors());
+
     return super.onLoad();
   }
 
   @override
   void onGameResize(Vector2 gameSize) {
     size = Vector2.all(min(gameSize.x, gameSize.y) * .6);
-    topLeftPosition = Vector2(gameSize.x / 2 - size.x / 2, 64);
+    position = Vector2(gameSize.x / 2 - size.x / 2, 64);
 
     super.onGameResize(gameSize);
   }
