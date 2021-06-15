@@ -3,12 +3,14 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/flame.dart';
+import 'package:flutter/animation.dart';
 import 'package:flutter_flame_cookie_clicker/controllers/cookie_controller.dart';
 import 'package:flutter_flame_cookie_clicker/controllers/cursor_controller.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AutoClickCursors extends PositionComponent with HasGameRef {
   final double cursorPadding = .2;
+  final speed = .1;
   double theta = .0;
   int index = 0;
   Timer? timer;
@@ -17,7 +19,7 @@ class AutoClickCursors extends PositionComponent with HasGameRef {
   void update(double dt) {
     timer?.update(dt);
 
-    theta += .1 * dt;
+    theta += speed * dt;
     _check();
     _moveCursors();
     super.update(dt);
@@ -40,30 +42,30 @@ class AutoClickCursors extends PositionComponent with HasGameRef {
       }
 
       timer = Timer(
-        10.0 / count,
+        3.0 / count,
         callback: () {
           context.read(cookieProvider.notifier).bake();
 
+          final duration = .3;
           final _parent = (parent as PositionComponent);
           final r = _parent.size.x / 2;
+          final l = r + r * cursorPadding;
           final offset = index * cursorPadding;
-          final p = theta + offset;
-          final p1 = p + cursorPadding;
-          final p2 = p + cursorPadding * 2;
-          final transform =
-              (double v) => Vector2.all(r) + Vector2(r * cos(v), -r * sin(v));
+          final p = theta + offset + speed * duration;
 
           final cursor = (children[index] as PositionComponent);
-          cursor.addEffect(MoveEffect(
-            path: [
-              cursor.position,
-              transform(p1),
-              transform(p2),
-            ],
-            duration: 1,
-          ));
+          cursor.addEffect(
+            MoveEffect(
+              path: [
+                _transform(Vector2.all(r), l - cursor.size.x / 2, p),
+                _transform(Vector2.all(r), l, p),
+              ],
+              duration: duration,
+              curve: Curves.easeInOut,
+            ),
+          );
 
-          index++;
+          index = (index + 1) % children.length;
         },
         repeat: true,
       )..start();
@@ -74,7 +76,7 @@ class AutoClickCursors extends PositionComponent with HasGameRef {
     final _parent = (parent as PositionComponent);
 
     final r = _parent.size.x / 2;
-    final padding = r * .2;
+    final padding = r * cursorPadding;
     final l = r + padding;
     final _size = r * .3;
 
@@ -83,9 +85,12 @@ class AutoClickCursors extends PositionComponent with HasGameRef {
       final p = theta + i * cursorPadding;
 
       autoCursor
-        ..position = Vector2.all(r) + Vector2(l * cos(p), -l * sin(p))
+        ..position = _transform(Vector2.all(r), l, p)
         ..size = Vector2.all(_size)
         ..angle = -p;
     });
   }
+
+  Vector2 _transform(Vector2 offset, double l, double x) =>
+      offset + Vector2(l * cos(x), -l * sin(x));
 }
