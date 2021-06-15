@@ -9,7 +9,7 @@ import 'package:flutter_flame_cookie_clicker/controllers/cursor_controller.dart'
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AutoClickCursors extends PositionComponent with HasGameRef {
-  final double cursorPadding = .2;
+  final double cursorPadding = .195;
   final speed = .1;
   double theta = .0;
   int index = 0;
