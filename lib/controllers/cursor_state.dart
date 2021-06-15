@@ -6,7 +6,7 @@ class CursorState with _$CursorState {
   CursorState._();
   factory CursorState({
     @Default(0) int count,
-    @Default(15) double cost,
+    @Default(13) double cost,
   }) = _CursorState;
 
   late final double nextCost = cost * 1.15;
