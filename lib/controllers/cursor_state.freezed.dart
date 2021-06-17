@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 class _$CursorStateTearOff {
   const _$CursorStateTearOff();
 
-  _CursorState call({int count = 0, double cost = 15}) {
+  _CursorState call({int count = 0, double cost = 13}) {
     return _CursorState(
       count: count,
       cost: cost,
@@ -112,12 +112,12 @@ class __$CursorStateCopyWithImpl<$Res> extends _$CursorStateCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_CursorState extends _CursorState {
-  _$_CursorState({this.count = 0, this.cost = 15}) : super._();
+  _$_CursorState({this.count = 0, this.cost = 13}) : super._();
 
   @JsonKey(defaultValue: 0)
   @override
   final int count;
-  @JsonKey(defaultValue: 15)
+  @JsonKey(defaultValue: 13)
   @override
   final double cost;
 

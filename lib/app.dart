@@ -1,5 +1,6 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_flame_cookie_clicker/components/store_select_widget.dart';
 import 'package:flutter_flame_cookie_clicker/controllers/cookie_controller.dart';
 import 'package:flutter_flame_cookie_clicker/controllers/cursor_controller.dart';
 import 'package:flutter_flame_cookie_clicker/cookie_clicker.dart';
@@ -24,6 +25,7 @@ class App extends HookWidget {
                   ),
                 ),
               ),
+              StoreSelectWidget(),
               ListTile(
                 leading: Assets.images.cursor.image(),
                 title: Text(
