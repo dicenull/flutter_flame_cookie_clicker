@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_flame_cookie_clicker/controllers/cookie_controller.dart';
 import 'package:flutter_flame_cookie_clicker/controllers/cursor_state.dart';
 import 'package:flutter_flame_cookie_clicker/controllers/store_controller.dart';
@@ -7,9 +9,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 final cursorProvider = StateNotifierProvider<CursorController, CursorState>(
     (ref) => CursorController(ref.read));
 
-final canBuyCursorProvider = StateProvider(
+final isValidCursorProvider = StateProvider(
   (ref) =>
-      ref.watch(cookieProvider).bakeCount >= ref.watch(cursorProvider).nextCost,
+      (ref.watch(storeProvider).isBuy &&
+          ref.watch(cookieProvider).bakeCount >=
+              ref.watch(cursorProvider).nextCost) ||
+      (ref.watch(storeProvider).isSell && ref.watch(cursorProvider).count > 0),
 );
 
 class CursorController extends StateNotifier<CursorState> {
@@ -21,23 +26,44 @@ class CursorController extends StateNotifier<CursorState> {
         .stream
         .map((state) => state.bulkLevel)
         .distinct()
-        .listen(
-          (count) => _setNextCost(count, state.cost.toDouble()),
-        );
+        .listen((_) => _setNextCost());
+    reader(storeProvider.notifier)
+        .stream
+        .map((state) => state.isBuy)
+        .distinct()
+        .listen((_) => _setNextCost());
 
     stream.map((state) => state.cost).distinct().listen(
-          (cost) =>
-              _setNextCost(reader(storeProvider).bulkLevel, cost.toDouble()),
-        );
+      (_) {
+        _setNextCost();
+
+        reader(settingRepository).setInt(Settings.cursor, state.count);
+      },
+    );
   }
 
-  void _setNextCost(int count, double cost) {
-    double nextCost = cost;
-    for (int i = 0; i < count; i++) {
-      nextCost *= CursorState.amount;
-    }
+  void _setNextCost() {
+    final count = reader(storeProvider).bulkLevel;
 
-    state = state.copyWith(nextCost: nextCost.round());
+    if (reader(storeProvider).isBuy) {
+      double nextCost = state.cost.toDouble();
+      for (int i = 0; i < count; i++) {
+        nextCost *= CursorState.amount;
+      }
+
+      state = state.copyWith(nextCost: nextCost.round());
+    } else {
+      double nextCost = 0;
+      double prevCost = state.cost.toDouble();
+      final N = min(count, state.count);
+
+      for (int i = 0; i < N; i++) {
+        nextCost += prevCost * .15;
+        prevCost = (state.cost / 1.15);
+      }
+
+      state = state.copyWith(nextCost: nextCost.round());
+    }
   }
 
   Future _fetch() async {
@@ -46,6 +72,15 @@ class CursorController extends StateNotifier<CursorState> {
     for (int i = 0; i < initCount; i++) {
       _addCursor();
     }
+  }
+
+  bool actionCursor() {
+    if (reader(storeProvider).isBuy) {
+      return buyCursor();
+    }
+
+    sellCursor();
+    return true;
   }
 
   bool buyCursor() {
@@ -58,12 +93,29 @@ class CursorController extends StateNotifier<CursorState> {
     return true;
   }
 
+  void sellCursor() {
+    reader(cookieProvider.notifier).add(state.nextCost);
+    _removeCursor();
+  }
+
+  void _removeCursor() {
+    final removeCount = min(reader(storeProvider).bulkLevel, state.count);
+
+    double prevCost = state.cost.toDouble();
+    for (int i = 0; i < removeCount; i++) {
+      prevCost = (state.cost / 1.15);
+    }
+
+    state = state.copyWith(
+      count: state.count - removeCount,
+      cost: prevCost.round(),
+    );
+  }
+
   void _addCursor() {
     state = state.copyWith(
       count: state.count + reader(storeProvider).bulkLevel,
       cost: state.nextCost,
     );
-
-    reader(settingRepository).setInt(Settings.cursor, state.count);
   }
 }

@@ -21,6 +21,10 @@ class CookieController extends StateNotifier<CookieState> {
     state = state.copyWith(bakeCount: initCount);
   }
 
+  void add(int point) {
+    state = state.copyWith(bakeCount: state.bakeCount + point);
+  }
+
   void bake() {
     state = state.copyWith(bakeCount: state.bakeCount + 1);
   }

@@ -9,7 +9,7 @@ class CursorStoreTile extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final canBuy = useProvider(canBuyCursorProvider).state;
+    final canBuy = useProvider(isValidCursorProvider).state;
 
     return ListTile(
       tileColor: canBuy
@@ -29,7 +29,7 @@ class CursorStoreTile extends HookWidget {
       ),
       onTap: canBuy
           ? () {
-              context.read(cursorProvider.notifier).buyCursor();
+              context.read(cursorProvider.notifier).actionCursor();
             }
           : null,
     );

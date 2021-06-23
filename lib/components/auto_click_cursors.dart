@@ -33,12 +33,19 @@ class AutoClickCursors extends PositionComponent with HasGameRef {
     if (children.length != count) {
       int sub = count - children.length;
       final image = Flame.images.fromCache('cursor.png');
-      for (int i = 0; i < sub; i++) {
-        addChild(
-          SpriteComponent(
-            sprite: Sprite(image),
-          )..anchor = Anchor.center,
-        );
+
+      if (sub < 0) {
+        for (int i = 0; i < sub.abs(); i++) {
+          removeChild(children[children.length - 1 - i]);
+        }
+      } else {
+        for (int i = 0; i < sub; i++) {
+          addChild(
+            SpriteComponent(
+              sprite: Sprite(image),
+            )..anchor = Anchor.center,
+          );
+        }
       }
 
       timer = Timer(
