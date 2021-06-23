@@ -33,7 +33,7 @@ class App extends HookWidget {
                   style: TextStyle(fontSize: 24),
                 ),
                 subtitle: Text(
-                  useProvider(cursorProvider).nextCost.round().toString(),
+                  useProvider(cursorProvider).nextCost.toString(),
                 ),
                 trailing: Text(
                   useProvider(cursorProvider).count.toString(),
