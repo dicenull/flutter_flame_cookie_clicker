@@ -26,25 +26,23 @@ class CursorController extends StateNotifier<CursorState> {
         .stream
         .map((state) => state.bulkLevel)
         .distinct()
-        .listen((_) => _setNextCost());
+        .listen((_) => _setNextCost(reader(storeProvider).bulkLevel));
     reader(storeProvider.notifier)
         .stream
         .map((state) => state.isBuy)
         .distinct()
-        .listen((_) => _setNextCost());
+        .listen((_) => _setNextCost(reader(storeProvider).bulkLevel));
 
     stream.map((state) => state.cost).distinct().listen(
       (_) {
-        _setNextCost();
+        _setNextCost(reader(storeProvider).bulkLevel);
 
         reader(settingRepository).setInt(Settings.cursor, state.count);
       },
     );
   }
 
-  void _setNextCost() {
-    final count = reader(storeProvider).bulkLevel;
-
+  void _setNextCost(int count) {
     if (reader(storeProvider).isBuy) {
       double nextCost = state.cost.toDouble();
       for (int i = 0; i < count; i++) {
@@ -72,6 +70,9 @@ class CursorController extends StateNotifier<CursorState> {
     for (int i = 0; i < initCount; i++) {
       _addCursor();
     }
+
+    _setNextCost(initCount);
+    state = state.copyWith(cost: state.nextCost);
   }
 
   bool actionCursor() {
