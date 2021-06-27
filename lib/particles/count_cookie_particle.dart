@@ -17,7 +17,7 @@ class CountCookieParticle extends ParticleComponent {
                 pos,
               ),
             ),
-            to: Vector2(0, -100).toOffset(),
+            to: Vector2(0, -100),
           ),
         );
 }
